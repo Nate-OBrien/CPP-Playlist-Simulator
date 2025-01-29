@@ -1,0 +1,2 @@
+RUN THIS COMMAND OR IT DOESNT WORK:
+cmd /c chcp 65001>nul; C:\msys64\ucrt64\bin\g++.exe -fdiagnostics-color=always -g C:\Users\Compsci\source\repos\Playlist\main.cpp -o C:\Users\Compsci\source\repos\Playlist\main.exe -lwinmm
