@@ -7,12 +7,16 @@
 
 using namespace std;
 
-void play();
+void play(string songData[2]);
 
 int main() {
-    vector<string> playlist {"Fein", "Carnival", "ETA", "Thick Of It"};
+    // pairs allow for 2 objects to be combined together, arrays did not work.
+    vector<pair<string, string>> playlist {{"Fein", "musicFiles/FEIN.wav"}, 
+                                {"Carnival", "musicFiles/carnival.wav"},
+                                {"Magic Johnson", "musicFiles/magic johnson.wav"}, 
+                                {"Thick Of It", "musicFiles/thick of it.wav"}};
     int choice;
-    string song;
+    string song, file;
 
     do {
         cout << "\nMenu:\n";
@@ -28,8 +32,11 @@ int main() {
             case 1:
                 cout << "Enter a song to add: ";
                 cin.ignore(); 
-                getline(cin, song); 
-                playlist.push_back(song);
+                getline(cin, song);
+                cout << "Enter the song's file: ";
+                cin.ignore(); 
+                getline(cin, file); 
+                playlist.push_back({song, file});
                 cout << song << " has been added" << endl;
                 break;
 
@@ -39,7 +46,7 @@ int main() {
                 } else {
                     cout << "Your playlist contains the following songs:\n";
                     for (size_t i = 0; i < playlist.size(); i++) {
-                        cout << i + 1 << ". " << playlist[i] << endl;
+                        cout << i + 1 << ". " << playlist[i].first << endl;
                     }
 
                     cout << "Enter the number of the song to delete: ";
@@ -47,7 +54,7 @@ int main() {
                     cin >> index;
 
                     if (index > 0 && index <= playlist.size()) {
-                        cout << playlist[index - 1] << " has been deleted" << endl;
+                        cout << playlist[index - 1].first << " has been deleted" << endl;
                         playlist.erase(playlist.begin() + index - 1); 
                     } else {
                         cout << "Invalid song number" << endl;
@@ -58,7 +65,7 @@ int main() {
             case 3:
                 cout << "Your playlist contains the following songs:\n";
                 for (const auto s : playlist) {
-                    cout << s << endl;
+                    cout << s.first << endl;
                 }
                 break;
 
@@ -78,14 +85,17 @@ int main() {
     return 0;
 }
 
-void play(){
-    if (PlaySound(TEXT("FEIN.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP)) {
-        std::cout << "Sound is playing!" << std::endl;
+void play(string songData[2]){
+    if (PlaySound(TEXT("musicFiles/FEIN.wav"), NULL, SND_FILENAME | SND_ASYNC)) {
+        std::cout << "Playing " << songData[0] << "!" << std::endl;
     } else {
-        std::cout << "Failed to play sound." << std::endl;
+        std::cout << "Failed to play." << std::endl;
     }
     
     // Add a pause to keep the program running while sound plays
-    std::cout << "Press any key to exit..." << std::endl;
+    std::cout << "Press any key to stop the music..." << std::endl;
     std::cin.get();
+
+    // Stop the sound
+    PlaySound(NULL, 0, 0);
 }
