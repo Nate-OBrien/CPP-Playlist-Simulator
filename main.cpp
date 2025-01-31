@@ -6,13 +6,14 @@
 #pragma comment(lib, "winmm.lib" )
 
 using namespace std;
-
+//portaudio
 void play(pair<string, string> songData);
+wstring s2ws(const string& s);
 
 int main() {
     // pairs allow for 2 objects to be combined together, arrays did not work.
     vector<pair<string, string>> playlist {{"Fein", "musicFiles/FEIN.wav"}, 
-                                {"Carnival", "musicFiles/carnival.wav"},
+                                {"Carnival", "musicFiles\\carnival.wav"},
                                 {"Magic Johnson", "musicFiles/magic johnson.wav"}, 
                                 {"Thick Of It", "musicFiles/thick of it.wav"}};
     int choice;
@@ -89,7 +90,8 @@ int main() {
 void play(pair <string, string> songData){
     string song = songData.first;
     string file = songData.second;
-    if (PlaySoundW(std::wstring(file.begin(), file.end()).c_str(), NULL, SND_FILENAME | SND_ASYNC)) {
+    cout << song << "\n" << file << endl;
+    if (PlaySoundA(file.c_str(), NULL, SND_FILENAME | SND_ASYNC)) {
         std::cout << "Playing " << songData.first << "!" << std::endl;
     } else {
         std::cout << "Failed to play." << std::endl;
@@ -99,6 +101,7 @@ void play(pair <string, string> songData){
     std::cout << "Press any key to stop the music..." << std::endl;
     std::cin.get();
 
-    // Stop the sound
+    //Stop the sound
     PlaySound(NULL, 0, 0);
 }
+
