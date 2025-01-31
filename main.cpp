@@ -7,7 +7,7 @@
 
 using namespace std;
 
-void play(string songData[2]);
+void play(pair<string, string> songData);
 
 int main() {
     // pairs allow for 2 objects to be combined together, arrays did not work.
@@ -17,7 +17,7 @@ int main() {
                                 {"Thick Of It", "musicFiles/thick of it.wav"}};
     int choice;
     string song, file;
-
+    play(playlist[1]);
     do {
         cout << "\nMenu:\n";
         cout << "1. Add a song\n";
@@ -79,15 +79,18 @@ int main() {
 
             default:
                 cout << "Invalid selection" << endl;
+                break;
         }
     } while (choice != 5);
 
     return 0;
 }
 
-void play(string songData[2]){
-    if (PlaySound(TEXT("musicFiles/FEIN.wav"), NULL, SND_FILENAME | SND_ASYNC)) {
-        std::cout << "Playing " << songData[0] << "!" << std::endl;
+void play(pair <string, string> songData){
+    string song = songData.first;
+    string file = songData.second;
+    if (PlaySoundW(std::wstring(file.begin(), file.end()).c_str(), NULL, SND_FILENAME | SND_ASYNC)) {
+        std::cout << "Playing " << songData.first << "!" << std::endl;
     } else {
         std::cout << "Failed to play." << std::endl;
     }
