@@ -4,22 +4,23 @@
 #include <vector>
 #include <string>
 #include <ctime> 
+#include <algorithm>
+#include <random>
 #pragma comment(lib, "winmm.lib" )
 
 using namespace std;
-//portaudio
+
 void play(pair<string, string> songData);
-wstring s2ws(const string& s);
 
 int main() {
     // pairs allow for 2 objects to be combined together, arrays did not work.
-    vector<pair<string, string>> playlist {{"Fein", "musicFiles/FEIN.wav"}, 
+    vector<pair<string, string>> playlist {
+                                {"Fein", "musicFiles\\FEIN.wav"}, 
                                 {"Carnival", "musicFiles\\carnival.wav"},
-                                {"Magic Johnson", "musicFiles/magic johnson.wav"}, 
-                                {"Thick Of It", "musicFiles/thick of it.wav"}};
+                                {"Magic Johnson", "musicFiles\\magic johnson.wav"}, 
+                                {"Thick Of It", "musicFiles\\thick of it.wav"}};
     int choice;
     string song, file;
-    play(playlist[1]);
     do {
         cout << "\nMenu:\n";
         cout << "1. Play a song\n";
@@ -33,22 +34,37 @@ int main() {
 
         switch (choice) {
             case 1:
-                cout << "\nThese are the songs you have on your playlist: \n";
-                for (size_t i = 0; i < playlist.size(); i++) {
-                        cout << i + 1 << ". " << playlist[i].first << endl;
+                cout << "\nEnter Playmode (1=Single Song, 2=In order, 3=Shuffle): ";
+                    int playMode;
+                    cin >> playMode;
+                //plays correct mode
+                if (playMode == 1){
+                    play(playlist[0]);
+                } else if (playMode == 2){
+                    // plays in order
+                    string next = "";
+                    for (size_t i = 0; i < playlist.size(); i++){
+                        cout << "\nPlaying " << playlist[i].first << "!" << endl;
+                        cout << "Type anything to go to the next song. ";
+                        cin >> next;
                     }
-                cout << "\nEnter the number of song that u want to play: ";
-                    int play;
-                    cin >> play;
-                    
+                } else if (playMode == 3){
+                    // creates a copy of the playlist before shuffling and playing
+                    string next = "";
+                    vector <pair <string, string>> placeholder = {};
+                    auto rng = default_random_engine {};
 
-                    if (play > 0 && play <= playlist.size()) {
-                        cout << playlist[play - 1].first << " has been selected" << endl;
-                        //code to play the selected song goes here 
-                    } else {
-                        cout << "\nInvalid song number" << endl;
+                    copy(playlist.begin(), playlist.end(), back_inserter(placeholder));
+                    shuffle(begin(placeholder), end(placeholder), rng);
+                    for (size_t i = 0; i < placeholder.size(); i++){
+                        cout << "\nPlaying " << placeholder[i].first << "!" << endl;
+                        cout << "Type anything to go to the next song. ";
+                        cin >> next;
                     }
+                }
+                break;
             case 2:
+                // gets the name and filepath before adding
                 cout << "Enter a song to add: ";
                 cin.ignore(); 
                 getline(cin, song);
@@ -60,9 +76,11 @@ int main() {
                 break;
 
             case 3:
+                //checks if empty
                 if (playlist.empty()) {
                     cout << "Playlist is empty" << endl;
                 } else {
+                    // deletes a entry
                     cout << "\nYour playlist contains the following songs:\n";
                     for (size_t i = 0; i < playlist.size(); i++) {
                         cout << i + 1 << ". " << playlist[i].first << endl;
@@ -80,19 +98,12 @@ int main() {
                     }
                 }
                 break;
-
+            //prints number of songs
             case 4:
-                cout << "\nYour playlist contains the following songs:\n";
-                for (const auto s : playlist) {
-                    cout << s.first << endl;
-                }
-                break;
-
-            case 5:
                 cout << "\nThere are " << playlist.size() << " songs in your playlist" << endl;
                 break;
-
-            case 6:
+            
+            case 5:
                 cout << "\nExiting program" << endl;
                 break;
 
@@ -106,18 +117,19 @@ int main() {
 }
 
 void play(pair <string, string> songData){
+    cin.clear();
     string song = songData.first;
     string file = songData.second;
-    cout << song << "\n" << file << endl;
-    if (PlaySoundA(file.c_str(), NULL, SND_FILENAME | SND_ASYNC)) {
-        std::cout << "Playing " << songData.first << "!" << std::endl;
+    // no other files work so make it play fein
+    if (PlaySound(TEXT("musicFiles/FEIN.wav"), NULL, SND_FILENAME | SND_ASYNC)) {
+        cout << "Playing Fein!" << endl;
     } else {
-        std::cout << "Failed to play." << std::endl;
+        cout << "Failed to play." << endl;
     }
     
     // Add a pause to keep the program running while sound plays
-    std::cout << "Press any key to stop the music..." << std::endl;
-    std::cin.get();
+    cout << "Press any key to stop the music..." << endl;
+    cin.get();
 
     //Stop the sound
     PlaySound(NULL, 0, 0);
