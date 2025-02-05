@@ -1,3 +1,10 @@
+/*
+*Name: Nathan O'Brien & Bryce Lombardo
+* Date: 2/4/25
+* Program Name: Cpp Playlist Project
+* Extra: Plays music
+*/
+
 #include <windows.h>
 #include <iostream>
 #include <MMsystem.h>
@@ -22,14 +29,7 @@ int main() {
     int choice;
     string song, file;
     do {
-        cout << "\nMenu:\n";
-        cout << "1. Play a song\n";
-        cout << "2. Add a song\n";
-        cout << "3. Delete a song\n";
-        cout << "4. Open playlist\n";
-        cout << "5. How Many Songs\n";
-        cout << "6. Exit\n";
-        cout << "Enter your choice: ";
+        cout << "\nMenu:\n1. Play a song\n2. Add a song\n3. Delete a song\n4. How Many Songs\n5. Exit\nEnter your choice: ";
         cin >> choice;
 
         switch (choice) {
@@ -39,7 +39,23 @@ int main() {
                     cin >> playMode;
                 //plays correct mode
                 if (playMode == 1){
-                    play(playlist[0]);
+                    for (size_t i = 0; i < playlist.size(); i++) {
+                        cout << i + 1 << ". " << playlist[i].first << endl;
+                    }
+                    cout << "\nEnter the number of the song to play: ";
+                    int index;
+                    cin >> index;
+                    if (index > 0 && index <= playlist.size()) {
+                        cin.clear();
+                        if (PlaySoundA(playlist[index-1].second.c_str(), NULL, SND_FILENAME | SND_ASYNC)) {
+                            cout << "Playing " << playlist[index-1].first << "!" << endl;
+                        } else {
+                            cout << "Failed to play." << endl;
+                        }
+                    } else {
+                        cout << "\nInvalid song number" << endl;
+                    }
+                    
                 } else if (playMode == 2){
                     // plays in order
                     string next = "";
@@ -118,8 +134,6 @@ int main() {
 
 void play(pair <string, string> songData){
     cin.clear();
-    string song = songData.first;
-    string file = songData.second;
     // no other files work so make it play fein
     if (PlaySound(TEXT("musicFiles/FEIN.wav"), NULL, SND_FILENAME | SND_ASYNC)) {
         cout << "Playing Fein!" << endl;
@@ -134,4 +148,3 @@ void play(pair <string, string> songData){
     //Stop the sound
     PlaySound(NULL, 0, 0);
 }
-
